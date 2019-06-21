@@ -312,13 +312,13 @@ class FastbootCommands(object):
         """
         if isinstance(source_file, str):
             source_len = os.stat(source_file).st_size
-            source_file = open(source_file)
+            source_file = open(source_file, "rb")
 
         with source_file:
             if source_len == 0:
                 # Fall back to storing it all in memory :(
                 data = source_file.read()
-                source_file = io.BytesIO(data.encode('utf8'))
+                source_file = io.BytesIO(data if isinstance(data, bytes) else data.encode("utf-8"))
                 source_len = len(data)
 
             self._protocol.SendCommand(b'download', b'%08x' % source_len)
